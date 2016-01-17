@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014, 2016 Open Source Geospatial Foundation - all rights reserved
  * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
@@ -27,6 +27,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
+import org.apache.wicket.util.lang.Bytes;
 
 /**
  * Collection of utilities for GeoServer web application components.
@@ -49,9 +50,25 @@ public class WebUtils {
      * @return
      */
     public static String localize(String key, IModel model, Object... params) {
-        StringResourceModel rm = new StringResourceModel(key, null, model, params);
-        rm.setLocalizer(GeoServerApplication.get().getResourceSettings().getLocalizer());
+        LocalizedStringResourceModel rm = new LocalizedStringResourceModel(key);
+        rm.setModel(model);
+        rm.setParameters(params);
         return rm.getString();
+    }
+
+    /**
+     * StringResourceModel with appropriate localization for GeoServer instance
+     */
+    static class LocalizedStringResourceModel extends StringResourceModel {
+
+        public LocalizedStringResourceModel(String resourceKey) {
+            super(resourceKey);
+        }
+
+        @Override
+        public Localizer getLocalizer() {
+            return GeoServerApplication.get().getResourceSettings().getLocalizer();
+        }
     }
 
     /**
@@ -82,6 +99,10 @@ public class WebUtils {
 
         Configuration cfg;
 
+        String variation;
+
+        String style;
+
         FreemarkerResourceStream(Class clazz, TemplateModel model) {
             this.clazz = clazz;
             this.model = model;
@@ -92,10 +113,12 @@ public class WebUtils {
             cfg.setClassForTemplateLoading(clazz, "");
         }
 
+        @Override
         public String getContentType() {
             return "text/html";
         }
 
+        @Override
         public InputStream getInputStream()
                 throws ResourceStreamNotFoundException {
             ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -105,26 +128,28 @@ public class WebUtils {
 
                 return new ByteArrayInputStream(output.toByteArray());
             } catch (IOException e) {
-                throw (ResourceStreamNotFoundException) new ResourceStreamNotFoundException(
-                        "Could not find template for: " + clazz).initCause(e);
+                throw new ResourceStreamNotFoundException("Could not find template for: " + clazz, e);
             } catch (TemplateException e) {
-                throw (ResourceStreamNotFoundException) new ResourceStreamNotFoundException(
-                        "Error in tempalte for: " + clazz).initCause(e);
+                throw new ResourceStreamNotFoundException("Error in template for: " + clazz, e);
             }
         }
 
+        @Override
         public Locale getLocale() {
             return cfg.getLocale();
         }
 
+        @Override
         public void setLocale(Locale locale) {
             cfg.setLocale(locale);
         }
 
-        public long length() {
-            return -1;
+        @Override
+        public Bytes length() {
+            return null; // unknown
         }
 
+        @Override
         public Time lastModifiedTime() {
             Object source;
             try {
@@ -137,13 +162,34 @@ public class WebUtils {
 
             if (source != null) {
                 long modified = cfg.getTemplateLoader().getLastModified(source);
-                return Time.valueOf(modified);
+                return Time.millis(modified);
             }
 
             return null;
         }
 
+        @Override
         public void close() throws IOException {
+        }
+
+        @Override
+        public String getStyle() {
+            return style;
+        }
+
+        @Override
+        public void setStyle(String string) {
+            style = string;
+        }
+
+        @Override
+        public String getVariation() {
+            return variation;
+        }
+
+        @Override
+        public void setVariation(String string) {
+            variation = string;
         }
     }
 
