@@ -1,4 +1,4 @@
-/* (c) 2014 - 2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2016 Open Source Geospatial Foundation - all rights reserved
  * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
@@ -37,7 +37,7 @@ import org.geowebcache.layer.TileLayer;
 
 /**
  * A page that lists all {@link LayerInfo} and {@link LayerGroupInfo} that don't already have an
- * associated {@link GeoServerTileLayer} and allows to create a tile layer for each of one or in
+ * associated {@link GeoServerTileLayer} and allows creation of a tile layer for each one or in
  * bulk using the default settings.
  * 
  * @author groldan
@@ -181,10 +181,8 @@ public class NewCachedLayerPage extends GeoServerSecuredPage {
 
                     final Integer selectedLayerCount = selectedNames.size();
 
-                    IModel<String> model = new StringResourceModel(
-                            "NewCachedLayerPage.confirmBulkConfig.message",
-                            BulkCachedLayerConfigurationLink.this, null,
-                            new Object[] { selectedLayerCount.toString() });
+                    IModel<String> model = new StringResourceModel("NewCachedLayerPage.confirmBulkConfig.message", BulkCachedLayerConfigurationLink.this)
+                            .setParameters(new Object[] { selectedLayerCount.toString() });
                     Label confirmLabel = new Label(id, model);
                     confirmLabel.setEscapeModelStrings(false);// allow some html inside, like
                                                               // <b></b>, etc
