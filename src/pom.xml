@@ -1158,7 +1158,7 @@
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
-      <version>1.4.10</version>
+      <version>1.4.11</version>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
@@ -1966,11 +1966,11 @@
   <jaiext.version>1.1.12</jaiext.version>
   <java.awt.headless>true</java.awt.headless>
   <sun.java2d.d3d>true</sun.java2d.d3d>
-  <jvm.opts></jvm.opts>
+  <jvm.opts/>
   <jalopy.phase>disabled</jalopy.phase>
   <jalopy.srcExcludesPattern>disabled</jalopy.srcExcludesPattern>
   <test.maxHeapSize>512M</test.maxHeapSize>
-  <test.excludedGroups></test.excludedGroups>
+  <test.excludedGroups/>
   <test.exclude.pattern>none</test.exclude.pattern>
   <quietTests>true</quietTests>
   <remoteOwsTests>false</remoteOwsTests>
@@ -2006,7 +2006,7 @@
   <argLine>-Xmx${test.maxHeapSize} -enableassertions ${jvm.opts} -Djava.awt.headless=${java.awt.headless} -Dsun.java2d.d3d=${sun.java2d.d3d} -DremoteOwsTests=${remoteOwsTests} -DquietTests=${quietTests} -Dorg.geotools.image.test.enabled=${image.tests} -Dorg.geotools.image.test.interactive=${interactive.image} -Duser.timezone=${user.timezone} -Dwindows.leniency=${windows.leniency} -XX:+TieredCompilation -XX:TieredStopAtLevel=1</argLine>
   <fmt.action>format</fmt.action>
   <fmt.skip>false</fmt.skip>
-  <errorProneFlags></errorProneFlags>
+  <errorProneFlags/>
   <errorProne.version>2.3.2</errorProne.version>
   <javac.version>9+181-r4173-1</javac.version>
   <pmd.version>6.11.0</pmd.version>
