@@ -38,6 +38,7 @@ public class TiledCollectionsDocument extends AbstractDocument {
         addSelfLinks("ogc/tiles/collections/");
     }
 
+    @Override
     public List<Link> getLinks() {
         return links;
     }
@@ -61,7 +62,7 @@ public class TiledCollectionsDocument extends AbstractDocument {
                     TileLayer tileLayer = tileLayers.next();
                     try {
                         TiledCollectionDocument collection =
-                                new TiledCollectionDocument(wms, tileLayer, true);
+                                new TiledCollectionDocument(wms, tileLayer, false);
 
                         next = collection;
                         return true;

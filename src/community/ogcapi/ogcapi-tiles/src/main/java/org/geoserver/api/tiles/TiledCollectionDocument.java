@@ -155,7 +155,7 @@ public class TiledCollectionDocument extends AbstractCollectionDocument {
                 addLinksFor(
                         "ogc/tiles/collections/" + id + "/queryables",
                         QueryablesDocument.class,
-                        "Collection queryables",
+                        "Collection queryables as ",
                         "queryables",
                         null,
                         "queryables");
@@ -163,7 +163,7 @@ public class TiledCollectionDocument extends AbstractCollectionDocument {
         }
     }
 
-    CollectionExtents getExtentFromGridsets(TileLayer tileLayer)
+    private CollectionExtents getExtentFromGridsets(TileLayer tileLayer)
             throws FactoryException, TransformException {
         Set<String> srsSet =
                 layer.getGridSubsets()
@@ -206,7 +206,7 @@ public class TiledCollectionDocument extends AbstractCollectionDocument {
         return new CollectionExtents(re);
     }
 
-    public CollectionExtents getExtentsFromPublished(PublishedInfo published) {
+    private CollectionExtents getExtentsFromPublished(PublishedInfo published) {
         try {
             ReferencedEnvelope bbox = null;
             if (published instanceof LayerInfo) {

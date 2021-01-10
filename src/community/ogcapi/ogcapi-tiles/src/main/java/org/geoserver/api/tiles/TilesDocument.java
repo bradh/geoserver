@@ -111,7 +111,7 @@ public class TilesDocument extends AbstractDocument {
         return tileMatrixSetLinks;
     }
 
-    protected void addTilesLinkForFormat(
+    protected final void addTilesLinkForFormat(
             String layerName, String baseURL, String format, String path, String rel) {
         String apiUrl =
                 ResponseUtils.buildURL(
@@ -119,7 +119,7 @@ public class TilesDocument extends AbstractDocument {
                         "ogc/tiles/collections/" + ResponseUtils.urlEncode(layerName) + path,
                         Collections.singletonMap("f", format),
                         URLMangler.URLType.SERVICE);
-        Link link = new Link(apiUrl, rel, format, layerName + " tiles as " + format.toString());
+        Link link = new Link(apiUrl, rel, format, layerName + " tiles as " + format);
         link.setTemplated(true);
         addLink(link);
     }

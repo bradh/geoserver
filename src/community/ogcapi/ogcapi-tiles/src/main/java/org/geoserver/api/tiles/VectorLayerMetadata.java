@@ -22,7 +22,7 @@ import java.util.Map;
 
 /** Maps to the JSON structure describing a layer of vector tiles */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-class VectorLayerMetadata {
+public class VectorLayerMetadata {
 
     /** Only reports the general type, not the specific one */
     enum GeometryType {
