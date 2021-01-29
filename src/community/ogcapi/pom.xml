@@ -3,7 +3,6 @@
   ~  (c) 2019 Open Source Geospatial Foundation - all rights reserved
   ~  This code is licensed under the GPL 2.0 license, available at the root
   ~  application directory.
-  ~  
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -28,6 +27,7 @@
         <module>ogcapi-changeset</module>
         <module>ogcapi-tiled-features</module>
         <module>dggs</module>
+        <module>ogcapi-records</module>
     </modules>
     
 </project>
