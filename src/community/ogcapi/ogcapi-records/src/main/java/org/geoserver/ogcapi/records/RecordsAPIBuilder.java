@@ -27,8 +27,8 @@ public class RecordsAPIBuilder extends org.geoserver.ogcapi.OpenAPIBuilder<CSWIn
         // adjust path output formats
         declareGetResponseFormats(api, "/", OpenAPI.class);
         declareGetResponseFormats(api, "/conformance", ConformanceDocument.class);
-        // declareGetResponseFormats(api, "/collections", CollectionsDocument.class);
-        // declareGetResponseFormats(api, "/collections/{collectionId}", CollectionsDocument.class);
+        declareGetResponseFormats(api, "/collections", CollectionsDocument.class);
+        declareGetResponseFormats(api, "/collections/{collectionId}", CollectionsDocument.class);
         // declareGetResponseFormats(api, "/collections/{collectionId}/items",
         // FeaturesResponse.class);
         // declareGetResponseFormats(

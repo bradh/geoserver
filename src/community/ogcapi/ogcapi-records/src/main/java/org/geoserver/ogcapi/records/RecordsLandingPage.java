@@ -8,25 +8,25 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.csw.CSWInfo;
 import org.geoserver.ogcapi.AbstractLandingPageDocument;
+import org.geoserver.ogcapi.Link;
 
-/** A Features server landing page */
+/** Records API service landing page */
 @JsonPropertyOrder({"title", "description", "links"})
 public class RecordsLandingPage extends AbstractLandingPageDocument {
 
-    public RecordsLandingPage(CSWInfo wfs, Catalog catalog, String featuresBase) {
+    public RecordsLandingPage(CSWInfo cswInfo, Catalog catalog, String recordsBase) {
         super(
-                (wfs.getTitle() == null) ? "Records 1.0 server" : wfs.getTitle(),
-                (wfs.getAbstract() == null) ? "" : wfs.getAbstract(),
+                (cswInfo.getTitle() == null) ? "Records 1.0 server" : cswInfo.getTitle(),
+                (cswInfo.getAbstract() == null) ? "" : cswInfo.getAbstract(),
                 "ogc/records");
-        /*
-                // collections
-                addLinksFor(
-                        featuresBase + "/collections",
-                        CollectionsDocument.class,
-                        "Collections Metadata as ",
-                        "collections",
-                        null,
-                        Link.REL_DATA);
-        */
+
+        // collections
+        addLinksFor(
+                recordsBase + "/collections",
+                CollectionsDocument.class,
+                "Collections Metadata as ",
+                "collections",
+                null,
+                Link.REL_DATA);
     }
 }

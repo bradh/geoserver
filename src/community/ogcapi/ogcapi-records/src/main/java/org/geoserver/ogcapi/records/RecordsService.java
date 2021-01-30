@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.csw.CSWInfo;
 import org.geoserver.ogcapi.APIDispatcher;
@@ -19,8 +20,10 @@ import org.geoserver.ogcapi.ConformanceDocument;
 import org.geoserver.ogcapi.HTMLResponseBody;
 import org.geoserver.ogcapi.OpenAPIMessageConverter;
 import org.geoserver.ows.kvp.TimeParser;
+import org.geoserver.platform.ServiceException;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -77,56 +80,45 @@ public class RecordsService {
     public OpenAPI api() {
         return new RecordsAPIBuilder().build(getService());
     }
+
+    @GetMapping(path = "collections", name = "getCollections")
+    @ResponseBody
+    @HTMLResponseBody(templateName = "collections.ftl", fileName = "collections.html")
+    public CollectionsDocument getCollections() {
+        return new CollectionsDocument(geoServer);
+    }
+
+    @GetMapping(path = "collections/{collectionId}", name = "getCollection")
+    @ResponseBody
+    @HTMLResponseBody(templateName = "collection.ftl", fileName = "collection.html")
+    public CollectionDocument collection(@PathVariable(name = "collectionId") String collectionId) {
+        FeatureTypeInfo ft = getFeatureType(collectionId);
+        CollectionDocument collection = new CollectionDocument(geoServer, ft);
+        return collection;
+    }
     /*
-        @GetMapping(path = "collections", name = "getCollections")
-        @ResponseBody
-        @HTMLResponseBody(templateName = "collections.ftl", fileName = "collections.html")
-        public CollectionsDocument getCollections() {
-            return new CollectionsDocument(geoServer, getServiceCRSList());
-        }
-
-        @GetMapping(path = "filter-capabilities", name = "getFilterCapabilities")
-        @ResponseBody
-        @HTMLResponseBody(
-            templateName = "filter-capabilities.ftl",
-            fileName = "filter-capabilities.html"
-        )
-        public FilterCapabilitiesDocument getFilterCapabilities() {
-            return new FilterCapabilitiesDocument();
-        }
-
-        @GetMapping(path = "collections/{collectionId}", name = "describeCollection")
-        @ResponseBody
-        @HTMLResponseBody(templateName = "collection.ftl", fileName = "collection.html")
-        public CollectionDocument collection(@PathVariable(name = "collectionId") String collectionId) {
-            FeatureTypeInfo ft = getFeatureType(collectionId);
-            CollectionDocument collection =
-                    new CollectionDocument(geoServer, ft, getFeatureTypeCRS(ft, getServiceCRSList()));
-
-            return collection;
-        }
-
-        @GetMapping(path = "collections/{collectionId}/queryables", name = "getQueryables")
-        @ResponseBody
-        @HTMLResponseBody(templateName = "queryables.ftl", fileName = "queryables.html")
-        public QueryablesDocument queryables(@PathVariable(name = "collectionId") String collectionId)
-                throws IOException {
-            FeatureTypeInfo ft = getFeatureType(collectionId);
-            return new QueryablesDocument(ft);
-        }
-
-        private FeatureTypeInfo getFeatureType(String collectionId) {
-            // single collection
-            FeatureTypeInfo featureType = getCatalog().getFeatureTypeByName(collectionId);
-            if (featureType == null) {
-                throw new ServiceException(
-                        "Unknown collection " + collectionId,
-                        ServiceException.INVALID_PARAMETER_VALUE,
-                        "collectionId");
-            }
-            return featureType;
-        }
+    @GetMapping(path = "collections/{collectionId}/queryables", name = "getQueryables")
+    @ResponseBody
+    @HTMLResponseBody(templateName = "queryables.ftl", fileName = "queryables.html")
+    public QueryablesDocument queryables(@PathVariable(name = "collectionId") String collectionId)
+            throws IOException {
+        FeatureTypeInfo ft = getFeatureType(collectionId);
+        return new QueryablesDocument(ft);
+    }
     */
+
+    private FeatureTypeInfo getFeatureType(String collectionId) {
+        // single collection
+        FeatureTypeInfo featureType = getCatalog().getFeatureTypeByName(collectionId);
+        if (featureType == null) {
+            throw new ServiceException(
+                    "Unknown collection " + collectionId,
+                    ServiceException.INVALID_PARAMETER_VALUE,
+                    "collectionId");
+        }
+        return featureType;
+    }
+
     @GetMapping(path = "conformance", name = "getConformanceDeclaration")
     @ResponseBody
     @HTMLResponseBody(templateName = "conformance.ftl", fileName = "conformance.html")
