@@ -22,12 +22,13 @@
     <module>ogcapi-features</module>
     <module>ogcapi-maps</module>
     <module>ogcapi-styles</module>
-    <module>ogcapi-tiles</module>
+    <!-- <module>ogcapi-tiles</module> -->
     <module>ogcapi-images</module>
     <module>ogcapi-changeset</module>
     <module>ogcapi-tiled-features</module>
     <module>dggs</module>
     <module>ogcapi-coverages</module>
+    <module>moving-features</module>
   </modules>
 
 </project>
