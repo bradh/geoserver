@@ -1,17 +1,25 @@
 package org.geoserver.ogcapi.movingfeatures;
 
+import io.swagger.v3.oas.models.OpenAPI;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ogcapi.APIDispatcher;
 import org.geoserver.ogcapi.APIService;
 import org.geoserver.ogcapi.ConformanceClass;
 import org.geoserver.ogcapi.ConformanceDocument;
 import org.geoserver.ogcapi.HTMLResponseBody;
+import org.geoserver.ogcapi.OpenAPIMessageConverter;
+import org.geoserver.platform.ServiceException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -47,11 +55,52 @@ public class MovingFeaturesService implements ApplicationContextAware {
                 (service.getAbstract() == null) ? "" : service.getAbstract());
     }
 
+    @GetMapping(
+            path = "api",
+            name = "getApi",
+            produces = {
+                OpenAPIMessageConverter.OPEN_API_MEDIA_TYPE_VALUE,
+                "application/x-yaml",
+                MediaType.TEXT_XML_VALUE
+            })
+    @ResponseBody
+    @HTMLResponseBody(templateName = "api.ftl", fileName = "api.html")
+    public OpenAPI api() throws IOException {
+        return new APIBuilder(geoServer).build(getService());
+    }
+
     @GetMapping(path = "collections", name = "getCollections")
     @ResponseBody
     @HTMLResponseBody(templateName = "collections.ftl", fileName = "collections.html")
     public CollectionsDocument getCollections() {
         return new CollectionsDocument(geoServer);
+    }
+
+    @GetMapping(path = "collections/{collectionId}", name = "describeCollection")
+    @ResponseBody
+    @HTMLResponseBody(templateName = "collection.ftl", fileName = "collection.html")
+    public CollectionDocument collection(@PathVariable(name = "collectionId") String collectionId)
+            throws IOException {
+        FeatureTypeInfo ft = getFeatureType(collectionId);
+        CollectionDocument collection = new CollectionDocument(geoServer, ft);
+
+        return collection;
+    }
+
+    private FeatureTypeInfo getFeatureType(String collectionId) {
+        // single collection
+        FeatureTypeInfo featureType = getCatalog().getFeatureTypeByName(collectionId);
+        if (featureType == null) {
+            throw new ServiceException(
+                    "Unknown collection " + collectionId,
+                    ServiceException.INVALID_PARAMETER_VALUE,
+                    "collectionId");
+        }
+        return featureType;
+    }
+
+    private Catalog getCatalog() {
+        return geoServer.getCatalog();
     }
 
     @GetMapping(path = "conformance", name = "getConformanceDeclaration")

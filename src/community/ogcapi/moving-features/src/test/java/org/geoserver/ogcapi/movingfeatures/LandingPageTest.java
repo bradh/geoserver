@@ -35,7 +35,11 @@ public class LandingPageTest extends OGCApiTestSupport {
         assertThat(
                 service.getOperations(),
                 Matchers.containsInAnyOrder(
-                        "getLandingPage", "getCollections", "getConformanceDeclaration"));
+                        "getLandingPage",
+                        "getApi",
+                        "getCollections",
+                        "describeCollection",
+                        "getConformanceDeclaration"));
     }
 
     @Test

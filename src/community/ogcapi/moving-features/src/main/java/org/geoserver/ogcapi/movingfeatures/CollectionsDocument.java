@@ -6,7 +6,6 @@ package org.geoserver.ogcapi.movingfeatures;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import java.util.Iterator;
 import java.util.List;
 import org.geoserver.catalog.FeatureTypeInfo;
@@ -14,13 +13,13 @@ import org.geoserver.catalog.util.CloseableIterator;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ogcapi.AbstractDocument;
 import org.geoserver.ogcapi.Link;
+import org.geoserver.platform.ServiceException;
 import org.opengis.filter.Filter;
 
 /**
  * A class representing the OGC API for Moving Features server "collections" in a way that Jackson
  * can easily translate to JSON/YAML (and can be used as a Freemarker template model)
  */
-@JacksonXmlRootElement(localName = "Collections")
 @JsonPropertyOrder({"links", "collections"})
 public class CollectionsDocument extends AbstractDocument {
 
@@ -39,21 +38,43 @@ public class CollectionsDocument extends AbstractDocument {
     }
 
     @JacksonXmlProperty(localName = "Collection")
-    @SuppressWarnings("PMD.CloseResource") // closed while iterating over it
     public Iterator<CollectionDocument> getCollections() {
         CloseableIterator<FeatureTypeInfo> featureTypes =
                 geoServer.getCatalog().list(FeatureTypeInfo.class, Filter.INCLUDE);
         return new Iterator<CollectionDocument>() {
+
+            CollectionDocument next;
+
             @Override
             public boolean hasNext() {
-                // TODO
-                return false;
+                if (next != null) {
+                    return true;
+                }
+
+                boolean hasNext = featureTypes.hasNext();
+                if (!hasNext) {
+                    featureTypes.close();
+                    return false;
+                } else {
+                    try {
+                        FeatureTypeInfo featureType = featureTypes.next();
+                        CollectionDocument collection =
+                                new CollectionDocument(geoServer, featureType);
+                        next = collection;
+                        return true;
+                    } catch (Exception e) {
+                        featureTypes.close();
+                        throw new ServiceException(
+                                "Failed to iterate over the feature types in the catalog", e);
+                    }
+                }
             }
 
             @Override
             public CollectionDocument next() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                CollectionDocument result = next;
+                this.next = null;
+                return result;
             }
         };
     }

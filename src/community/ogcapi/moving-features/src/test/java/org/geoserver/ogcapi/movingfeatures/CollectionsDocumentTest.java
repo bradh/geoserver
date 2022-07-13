@@ -4,12 +4,14 @@
  */
 package org.geoserver.ogcapi.movingfeatures;
 
+import static org.junit.Assert.assertEquals;
+
 import com.jayway.jsonpath.DocumentContext;
 import org.geoserver.ogcapi.OGCApiTestSupport;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
-public class CollectionsTest extends OGCApiTestSupport {
+public class CollectionsDocumentTest extends OGCApiTestSupport {
 
     @Test
     public void testCollectionsJson() throws Exception {
@@ -26,7 +28,9 @@ public class CollectionsTest extends OGCApiTestSupport {
 
     private void testCollectionsJson(DocumentContext json, MediaType defaultFormat)
             throws Exception {
-        // TODO: check once we have some collections
+        // TODO: check properly once we have some collections
+        int expected = getCatalog().getFeatureTypes().size();
+        assertEquals(expected, (int) json.read("collections.length()", Integer.class));
     }
 
     @Test

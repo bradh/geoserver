@@ -1,25 +1,22 @@
 <#global pagecrumbs="<li class='breadcrumb-item'><a href='"+serviceLink("")+"'>Home</a></li><li class='breadcrumb-item active'>Collections</li>">
 <#include "common-header.ftl">
-       <h2>GeoServer Moving Features Collections</h2>
-       <p>This document lists all the Moving Features collections available in the Moving Features service.</p>
-       
-       <#list model.collections as collection>
-       <h2><a id="html_${collection.htmlId}_link" href="${serviceLink("collections/${collection.encodedId}", "text/html")}">${collection.id}</a></h2>
-       <ul>
-         <#if collection.title??> 
-         <li><b>Title</b>: <span id="${collection.htmlId}_title">${collection.title}</span><br/></li>
-         </#if>
-         <#if collection.description??>
-         <li><b>Description</b>: <span id="${collection.htmlId}_description">${collection.description!}</span><br/></li>
-         </#if>
-         <#assign spatial = collection.extent.spatial>
-         <li><b>Geographic extents</b>:
-         <ul>
-         <#list spatial as se>
-         <li>${se.getMinX()}, ${se.getMinY()}, ${se.getMaxX()}, ${se.getMaxY()}.</li>
-         </#list>
-         </ul>
-         </li>
-         </ul>
-       </#list>
+
+  <h1>GeoServer Moving Features Collections</h1>
+  <p class="my-4">
+    This document lists all the collections available in the Moving Features service.<br/>
+  </p>
+  
+  <div class="row">
+    <#list model.collections as collection>
+    <div class="col-xs-12 col-md-6 col-lg-4 pb-4">
+      <div class="card h-100">
+        <div class="card-header">
+          <h2><a href="${serviceLink("collections/${collection.id}")}">${collection.id}</a></h2>
+        </div>
+        <#include "collection_include.ftl">
+      </div>
+    </div>
+    </#list>
+  </div>
+
 <#include "common-footer.ftl">
