@@ -21,7 +21,7 @@ public class LandingPage extends AbstractLandingPageDocument {
         // collections
         new LinksBuilder(CollectionsDocument.class, SERVICE_BASE)
                 .segment("/collections")
-                .title("Image collections metadata as ")
+                .title("Moving Features collections metadata as ")
                 .rel(Link.REL_DATA_URI)
                 .add(this);
     }

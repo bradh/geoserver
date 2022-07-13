@@ -47,6 +47,13 @@ public class MovingFeaturesService implements ApplicationContextAware {
                 (service.getAbstract() == null) ? "" : service.getAbstract());
     }
 
+    @GetMapping(path = "collections", name = "getCollections")
+    @ResponseBody
+    @HTMLResponseBody(templateName = "collections.ftl", fileName = "collections.html")
+    public CollectionsDocument getCollections() {
+        return new CollectionsDocument(geoServer);
+    }
+
     @GetMapping(path = "conformance", name = "getConformanceDeclaration")
     @ResponseBody
     @HTMLResponseBody(templateName = "conformance.ftl", fileName = "conformance.html")
